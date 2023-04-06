@@ -11,20 +11,26 @@ $ git clone https://github.com/NicolaiKuertoes/remove-notebook-ids.git
 ```
 
 ### Step 2
+Make sure the executable bit is set by running the following command:
+```bash
+$ cd ./remove-notebook-ids && chmod +x remove-notebook-ids
+```
+
+### Step 3
 Create a symbolic link of the `remove-notebook-ids` file to `$HOME/.local/bin/` using the following command:
 
 ```bash
 $ ln -s <PATH/TO/REPO/remove-notebook-ids> ~/.local/bin/remove-notebook-ids
 ```
 
-### Step 3
+### Step 4
 Now you have to add `~/.local/bin` to your `$PATH` variable by including the following line in your `~/.bashrc` or `~/.zshrc` file:
 
 ```bash
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-### Step 4
+### Step 5
 Restart your terminal and you can now use the `remove-notebook-ids` tool inside any directory.
 
 ## Usage
