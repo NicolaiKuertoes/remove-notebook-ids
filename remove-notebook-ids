@@ -44,7 +44,8 @@ def removeTags(infile: str) -> str:
 
     # input validation
     if not isinstance(infile, str):
-        raise TypeError(f"file must be of type str not {type(infile).__name__}")
+        raise TypeError(
+            f"file must be of type str not {type(infile).__name__}")
 
     else:
         outfile = re.sub(  # DO NOT TOUCH
@@ -102,7 +103,7 @@ def doMagic(dir: str, args: argparse.Namespace) -> str:
 
             except Exception as err:
                 return f"Error: {err}"
-            
+
     return f"Done removing id-tags from {', '.join(args.infiles)}"
 
 
@@ -110,7 +111,6 @@ def main():
     dir = getcwd()  # current working directory
     args = parseArguments(dir=dir)  # parsed arguments
     print(doMagic(dir=dir, args=args))  # This is where the fun begins!
-
 
 
 if __name__ == "__main__":
