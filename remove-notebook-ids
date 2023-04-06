@@ -1,0 +1,117 @@
+#!/usr/bin/env python
+
+import argparse
+import re
+
+from os import getcwd
+from pathlib import Path
+
+
+def parseArguments(dir: str) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog='remove-notebook-ids',
+        description='This program backs up all input files and removes all id-tags from the input files.',
+        epilog='Coded by Nicolai Kürtös with ❤️')
+
+    parser.add_argument("-i", "--infiles",
+                        required=True,
+                        nargs="+",
+                        metavar="<file>",
+                        help="specify input files",
+                        )
+
+    parser.add_argument("-o", "--outpath",
+                        required=False,
+                        nargs='?',
+                        default=dir,
+                        metavar="<path>",
+                        help="write file(s) to <path> instead of the current working directory (original files stay untouched)",
+                        type=str
+                        )
+
+    return parser.parse_args()
+
+
+def removeTags(infile: str) -> str:
+    """
+    ++ DO NOT TOUCH THIS FUNCTION ++
+    This functions removes alls id-tags from a file.
+
+    :param infile: str, File to be processed.
+
+    :return: str, Outfile; Processed infile, not containing any id-tags.
+    """
+
+    # input validation
+    if not isinstance(infile, str):
+        raise TypeError(f"file must be of type str not {type(infile).__name__}")
+
+    else:
+        outfile = re.sub(  # DO NOT TOUCH
+            r'[\r\n]+ *"id": "[a-zA-Z0-9-_]+",+',  # regex-pattern
+            '',
+            infile
+        )
+
+        outfile = re.sub(  # DO NOT TOUCH
+            r'},[\r\n]+ *"id": "[a-zA-Z0-9-_]+",*[\r\n]+ *',  # regex-pattern
+            '}',
+            outfile
+        )
+
+        return outfile
+
+
+def doMagic(dir: str, args: argparse.Namespace) -> str:
+    """
+    This function reads infiles, backs up infiles and writes outfile.
+
+    :param dir: str, Current working directory.
+    :param args: argparse object, Parsed arguments.
+
+    :return: str, Status message.
+    """
+
+    for infile in args.infiles:
+
+        # check filetype
+        if infile.split('.')[-1] != 'ipynb':
+            print(f"Error: Supported filetypes: .ipynb")
+            exit()
+
+        else:
+            try:
+                filename = infile
+
+                # read infile
+                with open(f"{dir}/{filename}", 'r') as infile:
+                    infile = infile.read()
+
+                if args.outpath == dir:
+                    # backup infile
+                    backup_path = Path(f"{dir}/backup/{filename}")
+                    backup_path.parent.mkdir(exist_ok=True, parents=True)
+                    with open(f"{dir}/backup/{filename}", 'w') as backup:
+                        backup.write(infile)
+
+                # write outfile
+                outfile_path = Path(f"{args.outpath}/{filename}")
+                outfile_path.parent.mkdir(exist_ok=True, parents=True)
+                with open(f"{outfile_path}", 'w') as outfile:
+                    outfile.write(removeTags(infile=infile))
+
+            except Exception as err:
+                return f"Error: {err}"
+            
+    return f"Done removing id-tags from {', '.join(args.infiles)}"
+
+
+def main():
+    dir = getcwd()  # current working directory
+    args = parseArguments(dir=dir)  # parsed arguments
+    print(doMagic(dir=dir, args=args))  # This is where the fun begins!
+
+
+
+if __name__ == "__main__":
+    main()
