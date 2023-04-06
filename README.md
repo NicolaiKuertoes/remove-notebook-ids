@@ -1,9 +1,9 @@
-# remove-notebook-tags
-
 ## Description
 This commandline-tool written in [Python](https://www.python.org/) removes all `"id"` tags of a `.ipynb` file.
 
 ## Installation
+### Requirements
+- Python3
 ### Step 1
 Clone this repo to a desired location running the following code inside a terminal:
 ```bash
